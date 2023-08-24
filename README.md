@@ -1,7 +1,7 @@
 # Can of Books Server
 
 **Author**: Luke Rogers, Adnan Mohamud
-**Version**: 1.1.0
+**Version**: 2.0.0
 
 ## Overview
 
@@ -30,6 +30,7 @@ Database: MongoDB is used to store book information, including titles, authors, 
 8/22/2023 [Version 1.0.1] - Filled out Readme
 8/22/2023 [Version 1.0.2] - Storage task
 8/23/2023 [Version 1.1.0] - Added route to books data
+8/24/2023 [Version 2.0.0] - Create and Delete books routes
 
 ## Estimates
 
@@ -50,6 +51,26 @@ Estimate of time needed to complete: 1 hour 30 minutes
 Start time: 2:01pm CST
 
 Finish time: 4:00pm CST
+
+Actual time needed to complete: 1 hour 59 minutes
+
+Name of feature: Create
+
+Estimate of time needed to complete: 2 hours
+
+Start time: 11:51am CST
+
+Finish time: 1:31pm CST
+
+Actual time needed to complete: 1 hour 40 minutes
+
+Name of feature: Delete
+
+Estimate of time needed to complete: 2 hours
+
+Start time: 1:31pm CST
+
+Finish time: 3:30pm CST
 
 Actual time needed to complete: 1 hour 59 minutes
 

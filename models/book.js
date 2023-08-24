@@ -1,6 +1,6 @@
 'use strict';
 
-/* 
+/*
   Each book in our database should look something like this:
   let aBook = {
     title: 'ABC',
