@@ -28,6 +28,7 @@ const app = express();
 
 //middleware
 app.use(cors());
+app.use(express.json()); // must have this to receive json from a request
 
 // Define port and validate .env is running
 const PORT = process.env.PORT || 3001;
@@ -39,13 +40,51 @@ app.get('/test', (request, response) => {
 
 app.get('/books', getBooks);
 
+app.post('/books', postBooks);
+
+
+
+// We are sending the ID of the cat we want to delete as a path parameter
+// Ex:
+// http://localhost:3001/books/64e7946a9f6341831bf7908d
+// the colon in the search query declares a variable -> ex: let id = ...
+app.delete('/books/:id', deleteBooks);
+
 // let getBooks = async (req, res, next) => {
 async function getBooks(req, res, next) {
+  // http://localhost:3001/books
   try {
     let results = await Book.find();
     res.status(200).send(results);
   } catch(error) {
     next(error);
+  }
+}
+
+async function postBooks(req, res, next) {
+  // adding a new Book object to database
+  console.log(req.body); // req.body is when we request/post new Book from front end into our json
+  try {
+    // we will want to add code here to add book to the database
+    let createdBook = await Book.create(req.body);
+    res.status(200).send(createdBook);
+  } catch(err) {
+    next(err);
+  }
+}
+
+async function deleteBooks(req, res, next) {
+  try {
+    // http://localhost:3001/books/64e7946a9f6341831bf7908d
+    // to extract the value where the id is (in this case: 64e7946a9f6341831bf7908d)
+    console.log(req.params.id);
+    let id = req.params.id;
+    // delete the book from our database
+    await Book.findByIdAndDelete(id);
+    // don't bother sending the deleted book in the response, it won't always be there
+    res.send('book deleted');
+  } catch(err) {
+    next(err);
   }
 }
 
