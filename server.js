@@ -49,6 +49,8 @@ app.post('/books', postBooks);
 // http://localhost:3001/books/64e7946a9f6341831bf7908d
 // the colon in the search query declares a variable -> ex: let id = ...
 app.delete('/books/:id', deleteBooks);
+app.put('/books/:id', putBooks);
+
 
 // let getBooks = async (req, res, next) => {
 async function getBooks(req, res, next) {
@@ -82,9 +84,24 @@ async function deleteBooks(req, res, next) {
     // delete the book from our database
     await Book.findByIdAndDelete(id);
     // don't bother sending the deleted book in the response, it won't always be there
-    res.send('book deleted');
+    res.status(200).send('book deleted');
   } catch(err) {
     next(err);
+  }
+}
+
+async function putBooks (req, res, next) {
+  try {
+    let id = req.params.id;
+    let bookFromReq = req.body;
+    let options = {
+      new: true,
+      overwrite: true
+    }
+    let updatedBook = await Book.findByIdAndUpdate(id, bookFromReq, options);
+    res.status(200).send(updatedBook);
+  } catch(err) {
+    next(err)
   }
 }
 
