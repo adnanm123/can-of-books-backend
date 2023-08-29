@@ -1,23 +1,26 @@
-'use strict';
+"use strict";
 
-console.log('Hello World');
+console.log("Hello World");
 
 // require
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
 
 // bringing in mongoose
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 // bring in code from model
-const Book = require('./models/book');
+const Book = require("./models/book");
+
+// bring in auth code
+const verifyUser = require("./auth");
 
 // add validation to confirm we are wired up to mongoDB
 const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection.error:'));
-db.once('open', function() {
-  console.log('Mongoose is connected');
+db.on("error", console.error.bind(console, "connection.error:"));
+db.once("open", function () {
+  console.log("Mongoose is connected");
 });
 
 // connect mongoose to mongoDB
@@ -34,33 +37,37 @@ app.use(express.json()); // must have this to receive json from a request
 const PORT = process.env.PORT || 3001;
 
 // Routes
-app.get('/test', (request, response) => {
-  response.send('test request received');
+app.get("/test", (request, response) => {
+  response.send("test request received");
 });
 
-app.get('/books', getBooks);
+app.get("/books", getBooks);
 
-app.post('/books', postBooks);
-
-
+app.post("/books", postBooks);
 
 // We are sending the ID of the cat we want to delete as a path parameter
 // Ex:
 // http://localhost:3001/books/64e7946a9f6341831bf7908d
 // the colon in the search query declares a variable -> ex: let id = ...
-app.delete('/books/:id', deleteBooks);
-app.put('/books/:id', putBooks);
-
+app.delete("/books/:id", deleteBooks);
+app.put("/books/:id", putBooks);
 
 // let getBooks = async (req, res, next) => {
 async function getBooks(req, res, next) {
   // http://localhost:3001/books
-  try {
-    let results = await Book.find();
-    res.status(200).send(results);
-  } catch(error) {
-    next(error);
-  }
+  verifyUser(req, async (err, user) => {
+    if (err) {
+      console.error(err);
+      res.send("invalid token");
+    } else {
+      try {
+        let results = await Book.find();
+        res.status(200).send(results);
+      } catch (error) {
+        next(error);
+      }
+    }
+  });
 }
 
 async function postBooks(req, res, next) {
@@ -70,7 +77,7 @@ async function postBooks(req, res, next) {
     // we will want to add code here to add book to the database
     let createdBook = await Book.create(req.body);
     res.status(200).send(createdBook);
-  } catch(err) {
+  } catch (err) {
     next(err);
   }
 }
@@ -84,29 +91,29 @@ async function deleteBooks(req, res, next) {
     // delete the book from our database
     await Book.findByIdAndDelete(id);
     // don't bother sending the deleted book in the response, it won't always be there
-    res.status(200).send('book deleted');
-  } catch(err) {
+    res.status(200).send("book deleted");
+  } catch (err) {
     next(err);
   }
 }
 
-async function putBooks (req, res, next) {
+async function putBooks(req, res, next) {
   try {
     let id = req.params.id;
     let bookFromReq = req.body;
     let options = {
       new: true,
-      overwrite: true
-    }
+      overwrite: true,
+    };
     let updatedBook = await Book.findByIdAndUpdate(id, bookFromReq, options);
     res.status(200).send(updatedBook);
-  } catch(err) {
-    next(err)
+  } catch (err) {
+    next(err);
   }
 }
 
-app.get('*', (request, response) => {
-  response.status(200).send('welcome');
+app.get("*", (request, response) => {
+  response.status(200).send("welcome");
 });
 
 // errors
