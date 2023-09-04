@@ -36,6 +36,8 @@ app.use(express.json()); // must have this to receive json from a request
 // Define port and validate .env is running
 const PORT = process.env.PORT || 3001;
 
+app.use(verifyUser);
+
 // Routes
 app.get("/test", (request, response) => {
   response.send("test request received");
@@ -52,30 +54,26 @@ app.post("/books", postBooks);
 app.delete("/books/:id", deleteBooks);
 app.put("/books/:id", putBooks);
 
-// let getBooks = async (req, res, next) => {
 async function getBooks(req, res, next) {
-  // http://localhost:3001/books
-  verifyUser(req, async (err, user) => {
-    if (err) {
-      console.error(err);
-      res.send("invalid token");
-    } else {
-      try {
-        let results = await Book.find();
-        res.status(200).send(results);
-      } catch (error) {
-        next(error);
-      }
-    }
-  });
+  console.log(req.user);
+  const email = req.user.email;
+  // console.log('req object --------->>>>>>', email);
+  try {
+    let results = await Book.find({userEmail: email});
+    res.status(200).send(results);
+  } catch (error) {
+    next(error);
+  }
+
 }
 
 async function postBooks(req, res, next) {
+  const email = req.user.email;
   // adding a new Book object to database
   console.log(req.body); // req.body is when we request/post new Book from front end into our json
   try {
     // we will want to add code here to add book to the database
-    let createdBook = await Book.create(req.body);
+    let createdBook = await Book.create({...req.body, userEmail: email});
     res.status(200).send(createdBook);
   } catch (err) {
     next(err);
@@ -98,9 +96,10 @@ async function deleteBooks(req, res, next) {
 }
 
 async function putBooks(req, res, next) {
+  const email = req.user.email;
   try {
     let id = req.params.id;
-    let bookFromReq = req.body;
+    let bookFromReq = {...req.body, userEmail: email};
     let options = {
       new: true,
       overwrite: true,
