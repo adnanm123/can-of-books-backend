@@ -32,6 +32,7 @@ Database: MongoDB is used to store book information, including titles, authors, 
 8/23/2023 [Version 1.1.0] - Added route to books data
 8/24/2023 [Version 2.0.0] - Create and Delete books routes
 8/18/2023 [Version 3.0.0] - Update books route
+09/02/2023 [Version 4.0.0] - Added in Authentication
 
 ## Estimates
 
@@ -84,6 +85,16 @@ Start time: 9:58am CST
 Finish time: 11:07am CST
 
 Actual time needed to complete: 1 hour 9 minutes
+
+Name of feature: Authentication
+
+Estimate of time needed to complete: 2 hours
+
+Start time: Friday 1:00 p.m
+
+Finish time: Saturday 4:00 p.m
+
+Actual time needed to complete: 1 day and 3 hours
 
 ## Credit and Collaborations
 
